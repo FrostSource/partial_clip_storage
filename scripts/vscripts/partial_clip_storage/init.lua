@@ -6,5 +6,5 @@ if IsServer() then
     require("alyxlib.core")
 
     -- execute code or load mod libraries here
-
+    require("partial_clip_storage.main")
 end
