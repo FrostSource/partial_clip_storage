@@ -33,6 +33,10 @@ ListenToGameEvent("player_attempted_invalid_pistol_clip_storage", function(param
         clip = hand.LastItemDropped
     else
         warn("Clip wasn't found from hand drop, using nearest clip...")
+        ---@TODO Player can throw into backpack so closest to hand might be wrong
+        ---      Closest to backpack might also be wrong if player holds loaded gun close
+        ---      or a clip is on a table behind them
+        ---@TODO Check for hand.PreviouslyDropped
         clip = Entities:FindByClassnameNearest("item_hlvr_clip_energygun", hand:GetCenter(), 64)
     end
 
