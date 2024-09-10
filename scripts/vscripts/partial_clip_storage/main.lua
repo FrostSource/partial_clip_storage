@@ -19,7 +19,7 @@ local CLIP_PROXY_MODEL = "models/weapons/vr_alyxgun/vr_alyxgun_clip_proxy.vmdl"
 
 GlobalPrecache("model", CLIP_PROXY_MODEL)
 
----commentary_started
+---Game event for player trying to store partially empty pistol clip
 ---@param params GAME_EVENT_PLAYER_ATTEMPTED_INVALID_PISTOL_CLIP_STORAGE
 ListenToGameEvent("player_attempted_invalid_pistol_clip_storage", function(params)
 
@@ -29,7 +29,6 @@ ListenToGameEvent("player_attempted_invalid_pistol_clip_storage", function(param
     local clip
 
     if hand.LastClassDropped == "item_hlvr_clip_energygun" then
-        -- print("Found clip from drop")
         clip = hand.LastItemDropped
     else
         warn("Clip wasn't found from hand drop, using nearest clip...")
