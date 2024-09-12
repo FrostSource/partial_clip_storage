@@ -2,7 +2,7 @@
 
 Allows the storage of partially empty pistol clips in your backpack so you can reload at your leisure.
 
-[i]This addon requires AlyxLib[/i]
+[i]This addon require AlyxLib to work.[/i]
 
 [i]Note: Valve refers to their gun magazines as "clips" so this addon will refer to them the same way for consistency.[/i]
 
@@ -14,8 +14,14 @@ Store partially empty clips into your backpack as normal. Your ammo pool will be
 
 [h2]Source Code[/h2]
 
-GitHub: [Available soon]
+GitHub: https://github.com/FrostSource/partial_clip_storage
 
 [h2]Known Issues[/h2]
 
 The invalid storage instructor message might appear sometimes when trying to store partially empty clips. If this happens to you please leave a comment with what you can remember about the moment (exactly how were you storing the clip? Did you have any other addon enabled?)
+
+[h2]Getting Help[/h2]
+
+Please feel free to reach out either by commenting below or messaging me on the Discord server!
+
+[url=https://discord.gg/42SC3Wyjv4][img]https://steamuserimages-a.akamaihd.net/ugc/2397692528302959470/036A75FE4B2E8CD2224F8B62E7CEBEE649493C40/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false[/img][/url]
