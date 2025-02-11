@@ -20,7 +20,7 @@ local CLIP_PROXY_MODEL = "models/weapons/vr_alyxgun/vr_alyxgun_clip_proxy.vmdl"
 GlobalPrecache("model", CLIP_PROXY_MODEL)
 
 ---Game event for player trying to store partially empty pistol clip
----@param params GAME_EVENT_PLAYER_ATTEMPTED_INVALID_PISTOL_CLIP_STORAGE
+---@param params GameEventPlayerAttemptedInvalidPistolClipStorage
 ListenToGameEvent("player_attempted_invalid_pistol_clip_storage", function(params)
 
     local hand = Player.Hands[Util.GetHandIdFromTip(params.vr_tip_attachment) + 1]
