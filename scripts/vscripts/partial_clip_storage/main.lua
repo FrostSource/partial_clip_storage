@@ -63,6 +63,11 @@ ListenToGameEvent("player_attempted_invalid_pistol_clip_storage", function(param
 
 end, nil)
 
+---
+---Get the amount of bullets in a pistol clip(magazine).
+---
+---@param clip EntityHandle
+---@return integer # The number of bullets in the clip, or -1 if it could not be determined.
 function GetBulletCountFromPistolClip(clip)
     local proxy = SpawnEntityFromTableSynchronous("prop_dynamic", {
         model = CLIP_PROXY_MODEL,
