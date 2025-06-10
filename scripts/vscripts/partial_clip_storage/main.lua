@@ -74,7 +74,7 @@ function GetBulletCountFromPistolClip(clip)
 
     local z = proxy:TransformPointWorldToEntity(proxy:GetAttachmentOrigin(1)).z
     for ind, val in ipairs(ammoZValues) do
-        if z >= val then
+        if math.isclose(z, val, 0.05) then
             bulletCount = ind - 1
             break
         end
