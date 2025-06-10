@@ -14,6 +14,22 @@ local ammoZValues = {
     -2.343, -- 10
 }
 
+---Rough values where the attachment Z value will be at for each bullet count in the left hand.
+---If storing a second table is unwanted we can generate these values using: (-ammoZValues[i] - 6.477)
+local ammoZValuesLeftHand = {
+    -7.724, -- 0
+    -7.366, -- 1
+    -7.007, -- 2
+    -6.648, -- 3
+    -6.289, -- 4
+    -5.930, -- 5
+    -5.572, -- 6
+    -5.213, -- 7
+    -4.854, -- 8
+    -4.495, -- 9
+    -4.136, -- 10
+}
+
 ---Custom model with attachment used to find ammo count.
 local CLIP_PROXY_MODEL = "models/weapons/vr_alyxgun/vr_alyxgun_clip_proxy.vmdl"
 
@@ -78,6 +94,9 @@ function GetBulletCountFromPistolClip(clip)
     local bulletCount = -1
 
     local z = proxy:TransformPointWorldToEntity(proxy:GetAttachmentOrigin(1)).z
+    local values = Convars:GetBool("hlvr_left_hand_primary") and ammoZValuesLeftHand or ammoZValues
+
+    for ind, val in ipairs(values) do
         if math.isclose(z, val, nil, 0.05) then
             bulletCount = ind - 1
             break
