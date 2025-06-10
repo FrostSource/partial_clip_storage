@@ -1,4 +1,6 @@
 
+RegisterAlyxLibAddon("partial_clip_storage", "Partial Clip Storage", "", "clip_storage", "v1.3.1", nil)
+
 ---Rough values where the attachment Z value will be at for each bullet count.
 local ammoZValues = {
     1.247, -- 0
