@@ -83,3 +83,20 @@ function GetBulletCountFromPistolClip(clip)
     proxy:Kill()
     return bulletCount
 end
+
+RegisterAlyxLibCommand("print_bullets_in_gun_clip", function ()
+    local pistol = Player.Items.weapons.energygun;
+    if pistol then
+        local clip = pistol:GetChild("item_hlvr_clip_energygun")
+        if clip then
+            local bulletCount = GetBulletCountFromPistolClip(clip)
+            if bulletCount >= 0 then
+                print("Bullets in the pistol's magazine: " .. bulletCount)
+            else
+                print("Could not determine the number of bullets in the pistol's magazine.")
+            end
+        else
+            print("No clip found in the pistol.")
+        end
+    end
+end, "(partial_clip_storange) Prints the number of bullets in the pistol's magazine if found")
