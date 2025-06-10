@@ -62,6 +62,14 @@ ListenToGameEvent("player_attempted_invalid_pistol_clip_storage", function(param
 
     local bulletCount = GetBulletCountFromPistolClip(clip)
 
+    if bulletCount == 0 then
+        devprint2("Clip is empty, not storing")
+        return
+    elseif bulletCount < 0 then
+        warn("Could not determine the number of bullets in the clip, aborting storage.")
+        return
+    end
+
     devprint2("Storing partial clip with " .. bulletCount .. " bullets")
 
     SendToServerConsole("hlvr_addresources " .. bulletCount .. " 0 0 0")
