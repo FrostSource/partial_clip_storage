@@ -1,4 +1,8 @@
 
+local version = "v1.1.0"
+
+RegisterAlyxLibAddon("partial_clip_storage", "Partial Clip Storage", "3329684800", "clip_storage", "v1.3.1", nil)
+
 ---Rough values where the attachment Z value will be at for each bullet count.
 local ammoZValues = {
     1.247, -- 0
@@ -12,6 +16,22 @@ local ammoZValues = {
     -1.625, -- 8
     -1.984, -- 9
     -2.343, -- 10
+}
+
+---Rough values where the attachment Z value will be at for each bullet count in the left hand.
+---If storing a second table is unwanted we can generate these values using: (-ammoZValues[i] - 6.477)
+local ammoZValuesLeftHand = {
+    -7.724, -- 0
+    -7.366, -- 1
+    -7.007, -- 2
+    -6.648, -- 3
+    -6.289, -- 4
+    -5.930, -- 5
+    -5.572, -- 6
+    -5.213, -- 7
+    -4.854, -- 8
+    -4.495, -- 9
+    -4.136, -- 10
 }
 
 ---Custom model with attachment used to find ammo count.
@@ -46,6 +66,14 @@ ListenToGameEvent("player_attempted_invalid_pistol_clip_storage", function(param
 
     local bulletCount = GetBulletCountFromPistolClip(clip)
 
+    if bulletCount == 0 then
+        devprint2("Clip is empty, not storing")
+        return
+    elseif bulletCount < 0 then
+        warn("Could not determine the number of bullets in the clip, aborting storage.")
+        return
+    end
+
     devprint2("Storing partial clip with " .. bulletCount .. " bullets")
 
     SendToServerConsole("hlvr_addresources " .. bulletCount .. " 0 0 0")
@@ -63,6 +91,11 @@ ListenToGameEvent("player_attempted_invalid_pistol_clip_storage", function(param
 
 end, nil)
 
+---
+---Get the amount of bullets in a pistol clip(magazine).
+---
+---@param clip EntityHandle
+---@return integer # The number of bullets in the clip, or -1 if it could not be determined.
 function GetBulletCountFromPistolClip(clip)
     local proxy = SpawnEntityFromTableSynchronous("prop_dynamic", {
         model = CLIP_PROXY_MODEL,
@@ -73,8 +106,10 @@ function GetBulletCountFromPistolClip(clip)
     local bulletCount = -1
 
     local z = proxy:TransformPointWorldToEntity(proxy:GetAttachmentOrigin(1)).z
-    for ind, val in ipairs(ammoZValues) do
-        if z >= val then
+    local values = Convars:GetBool("hlvr_left_hand_primary") and ammoZValuesLeftHand or ammoZValues
+
+    for ind, val in ipairs(values) do
+        if math.isclose(z, val, nil, 0.05) then
             bulletCount = ind - 1
             break
         end
@@ -83,3 +118,20 @@ function GetBulletCountFromPistolClip(clip)
     proxy:Kill()
     return bulletCount
 end
+
+RegisterAlyxLibCommand("print_bullets_in_gun_clip", function ()
+    local pistol = Player.Items.weapons.energygun;
+    if pistol then
+        local clip = pistol:GetChild("item_hlvr_clip_energygun")
+        if clip then
+            local bulletCount = GetBulletCountFromPistolClip(clip)
+            if bulletCount >= 0 then
+                print("Bullets in the pistol's magazine: " .. bulletCount)
+            else
+                print("Could not determine the number of bullets in the pistol's magazine.")
+            end
+        else
+            print("No clip found in the pistol.")
+        end
+    end
+end, "(partial_clip_storange) Prints the number of bullets in the pistol's magazine if found")
