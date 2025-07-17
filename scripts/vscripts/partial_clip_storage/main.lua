@@ -1,4 +1,6 @@
 
+local version = "v1.1.0"
+
 RegisterAlyxLibAddon("partial_clip_storage", "Partial Clip Storage", "3329684800", "clip_storage", "v1.3.1", nil)
 
 ---Rough values where the attachment Z value will be at for each bullet count.
