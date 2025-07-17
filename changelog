@@ -1,7 +1,7 @@
 Update 2
 
-Updated to AlyxLib v1.4.0
-Fixed incorrect ammo count being stored
+Updated to AlyxLib v2.0.0
+Fixed incorrect ammo count being stored sometimes
 Fixed left handed ammo being incorrect
 Added print_bullets_in_gun_clip console command for testing
 
