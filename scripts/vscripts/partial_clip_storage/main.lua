@@ -50,11 +50,18 @@ local function enableFailover()
     ---Failover: Update bullet count on pistol clip insert
     ---@param params GameEventPlayerPistolClipInserted
     ListenToGameEvent("player_pistol_clip_inserted", function (params)
-        local clip = GetCurrentClipInPistol()
-        if clip then
-            local bulletCount = clip:Attribute_GetIntValue("BulletCount", params.bullet_count)
-            clip:Attribute_SetIntValue("BulletCount", bulletCount)
-        end
+        -- Clip is not parented at this point so we delay, thanks Valve
+        Player:Delay(function()
+            local clip = GetCurrentClipInPistol()
+            if clip then
+                if type(params.bullet_count) == "number" then
+                    clip:Attribute_SetIntValue("BulletCount", params.bullet_count)
+                else
+                    local bulletCount = clip:Attribute_GetIntValue("BulletCount", 9)
+                    clip:Attribute_SetIntValue("BulletCount", bulletCount)
+                end
+            end
+        end, 0.1)
     end, nil)
 
     ---Failover: Subtract a bullet when pistol is chambered
@@ -62,7 +69,7 @@ local function enableFailover()
     ListenToGameEvent("player_pistol_chambered_round", function (params)
         local clip = GetCurrentClipInPistol()
         if clip then
-            local bulletCount = clip:Attribute_GetIntValue("BulletCount", 10)
+            local bulletCount = clip:Attribute_GetIntValue("BulletCount", 9)
             bulletCount = bulletCount - 1
             clip:Attribute_SetIntValue("BulletCount", bulletCount)
         end
@@ -74,7 +81,7 @@ local function enableFailover()
         if Player.CurrentlyEquipped == "hlvr_weapon_energygun" then
             local clip = GetCurrentClipInPistol()
             if clip then
-                local bulletCount = clip:Attribute_GetIntValue("BulletCount", 10)
+                local bulletCount = clip:Attribute_GetIntValue("BulletCount", 9)
                 bulletCount = bulletCount - 1
                 clip:Attribute_SetIntValue("BulletCount", bulletCount)
             end
