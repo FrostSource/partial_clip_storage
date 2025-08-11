@@ -1,7 +1,10 @@
 
 local version = "v1.1.0"
 
-RegisterAlyxLibAddon("partial_clip_storage", "Partial Clip Storage", "3329684800", "clip_storage", "v1.3.1", nil)
+---Failover mode is enabled when ammo can't be determined from a clip.
+---This is most likely due to the clip being a custom model.
+---Failover mode tracks bullet count using game events.
+local failoverEnabled = false
 
 ---Rough values where the attachment Z value will be at for each bullet count.
 local ammoZValues = {
@@ -39,6 +42,58 @@ local CLIP_PROXY_MODEL = "models/weapons/vr_alyxgun/vr_alyxgun_clip_proxy.vmdl"
 
 GlobalPrecache("model", CLIP_PROXY_MODEL)
 
+local function enableFailover()
+    failoverEnabled = true
+
+    ---Failover: Update bullet count on pistol clip insert
+    ---@param params GameEventPlayerPistolClipInserted
+    ListenToGameEvent("player_pistol_clip_inserted", function (params)
+        local clip = GetCurrentClipInPistol()
+        if clip then
+            local bulletCount = clip:Attribute_GetIntValue("BulletCount", params.bullet_count)
+            clip:Attribute_SetIntValue("BulletCount", bulletCount)
+        end
+    end, nil)
+
+    ---Failover: Subtract a bullet when pistol is chambered
+    ---@param params GameEventPlayerPistolChamberedRound
+    ListenToGameEvent("player_pistol_chambered_round", function (params)
+        local clip = GetCurrentClipInPistol()
+        if clip then
+            local bulletCount = clip:Attribute_GetIntValue("BulletCount", 10)
+            bulletCount = bulletCount - 1
+            clip:Attribute_SetIntValue("BulletCount", bulletCount)
+        end
+    end, nil)
+
+    ---Failover: Subtract a bullet when player shoots the pistol
+    ---@param params GameEventPlayerShootWeapon
+    ListenToGameEvent("player_shoot_weapon", function (params)
+        if Player.CurrentlyEquipped == "hlvr_weapon_energygun" then
+            local clip = GetCurrentClipInPistol()
+            if clip then
+                local bulletCount = clip:Attribute_GetIntValue("BulletCount", 10)
+                bulletCount = bulletCount - 1
+                clip:Attribute_SetIntValue("BulletCount", bulletCount)
+            end
+        end
+    end, nil)
+end
+
+---Incompatible addons are those that change the clip model
+local unsupportedAddons = {
+    ["2260861413"] = "USP Match (Half-Life 2 Pistol)",
+}
+
+local addonList = GetEnabledAddons()
+for addonID, addonDesc in pairs(unsupportedAddons) do
+    if vlua.find(addonList, addonID) then
+        Msg("Partial Clip Storage: Incompatible addon detected - " .. addonDesc .. " (" .. addonID .. ").\nSwitching to alternative tracking mode...\n")
+        enableFailover()
+        break
+    end
+end
+
 ---Game event for player trying to store partially empty pistol clip
 ---@param params GameEventPlayerAttemptedInvalidPistolClipStorage
 ListenToGameEvent("player_attempted_invalid_pistol_clip_storage", function(params)
@@ -64,7 +119,17 @@ ListenToGameEvent("player_attempted_invalid_pistol_clip_storage", function(param
         return
     end
 
-    local bulletCount = GetBulletCountFromPistolClip(clip)
+    local bulletCount = -1
+    if failoverEnabled then
+        bulletCount = clip:Attribute_GetIntValue("BulletCount", -1)
+    else
+        bulletCount = GetBulletCountFromPistolClip(clip)
+        if bulletCount < 0 then
+            warn("Could not determine the number of bullets in the clip, switching to alternative tracking...")
+            enableFailover()
+            bulletCount = clip:Attribute_GetIntValue("BulletCount", -1)
+        end
+    end
 
     if bulletCount == 0 then
         devprint2("Clip is empty, not storing")
@@ -97,6 +162,10 @@ end, nil)
 ---@param clip EntityHandle
 ---@return integer # The number of bullets in the clip, or -1 if it could not be determined.
 function GetBulletCountFromPistolClip(clip)
+    if failoverEnabled then
+        return clip:Attribute_GetIntValue("BulletCount", -1)
+    end
+
     local proxy = SpawnEntityFromTableSynchronous("prop_dynamic", {
         model = CLIP_PROXY_MODEL,
         rendermode = "kRenderNone"
@@ -140,7 +209,12 @@ RegisterAlyxLibCommand("print_bullets_in_gun_clip", function ()
             if bulletCount >= 0 then
                 print("Bullets in the pistol's magazine: " .. bulletCount)
             else
-                print("Could not determine the number of bullets in the pistol's magazine.")
+                if not failoverEnabled then
+                    print("Could not determine the number of bullets in the pistol's magazine, switching to alternative tracking...")
+                    enableFailover()
+                else
+                    print("Could not determine the number of bullets in the pistol's magazine.")
+                end
             end
         else
             print("No clip found in the pistol.")
