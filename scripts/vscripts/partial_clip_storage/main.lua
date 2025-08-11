@@ -1,5 +1,7 @@
 
-local version = "v1.1.0"
+local version = "v1.2.0"
+
+RegisterAlyxLibAddon("Partial Clip Storage", version, "3329684800", nil, "v1.3.1", nil)
 
 ---Failover mode is enabled when ammo can't be determined from a clip.
 ---This is most likely due to the clip being a custom model.

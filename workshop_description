@@ -2,13 +2,26 @@
 
 Allows the storage of partially empty pistol clips in your backpack so you can reload at your leisure.
 
-[i]This addon require AlyxLib to work.[/i]
+[i]This addon requires [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3329679071]AlyxLib[/url] to work.[/i]
 
 [i]Note: Valve refers to their gun magazines as "clips" so this addon will refer to them the same way for consistency.[/i]
 
 [h2]How To Use[/h2]
 
 Store partially empty clips into your backpack as normal. Your ammo pool will be increased by the number of bullets left inside the clip. Full clips will be taken out of the backpack until you have less than 10 bullets left, at which point a final clip will be removed with the number of bullets left.
+
+[b]Version 1.2.0 introduces an alternative tracking mode for incompatible pistol addons.[/b]
+
+If partial ammo isn’t being stored in your backpack, do the following:
+
+[olist]
+    [*]Attempt to store a partial clip into your backpack.
+    [*]Insert the clip into your pistol.
+    [*]Remove the clip from the pistol.
+    [*]Then try storing it in your backpack again.
+[/olist]
+
+If partial ammo still doesn’t get stored after this, please leave a comment with a link to the addon you’re using so I can look into it.
 
 [hr][/hr]
 
