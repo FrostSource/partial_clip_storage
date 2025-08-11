@@ -119,6 +119,18 @@ function GetBulletCountFromPistolClip(clip)
     return bulletCount
 end
 
+---
+---Get the current clip of a pistol.
+---
+---@param pistol? EntityHandle # The pistol to get the current clip of, defaults to the player's pistol.
+function GetCurrentClipInPistol(pistol)
+    pistol = pistol or Player.Items.weapons.energygun;
+    if pistol then
+        return pistol:GetChild("item_hlvr_clip_energygun")
+    end
+    return nil
+end
+
 RegisterAlyxLibCommand("print_bullets_in_gun_clip", function ()
     local pistol = Player.Items.weapons.energygun;
     if pistol then
