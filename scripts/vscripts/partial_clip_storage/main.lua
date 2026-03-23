@@ -42,7 +42,7 @@ local ammoZValuesLeftHand = {
 ---Custom model with attachment used to find ammo count.
 local CLIP_PROXY_MODEL = "models/weapons/vr_alyxgun/vr_alyxgun_clip_proxy.vmdl"
 
-GlobalPrecache("model", CLIP_PROXY_MODEL)
+GlobalPrecache:Add("model", CLIP_PROXY_MODEL)
 
 local function enableFailover()
     failoverEnabled = true
