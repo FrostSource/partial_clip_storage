@@ -1,5 +1,5 @@
 
-local version = "v1.2.0"
+local version = "v1.2.1"
 
 RegisterAlyxLibAddon("Partial Clip Storage", version, "3329684800", nil, "v1.3.1", nil)
 

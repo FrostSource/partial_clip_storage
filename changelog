@@ -1,3 +1,7 @@
+Update 4 (v1.2.1)
+
+Fixed ammo not updating correctly on clip insert.
+
 Update 3 (v1.2.0)
 
 Added alternative tracking mode that monitors pistol interactions to track ammo.
